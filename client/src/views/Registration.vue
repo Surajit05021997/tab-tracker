@@ -88,8 +88,8 @@ form {
 
 .form-field input {
   border: none;
-  padding: 8px 0;
-  font-size: 16px;
+  padding: 8px 4px;
+  font-size: 20px;
   background-color: #ebebeb;
 }
 
@@ -104,6 +104,10 @@ button {
   color: #fff;
   font-size: 16px;
   font-weight: 600;
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 .message {

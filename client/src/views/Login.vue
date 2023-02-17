@@ -18,6 +18,7 @@
 
 <script>
 import { login } from '@/services';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'Login',
@@ -29,12 +30,18 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['setUserAction', 'setTokenAction']),
     async login() {
       try {
-        await login({
+        this.errorMsg = '';
+        const result = await login({
           email: this.email,
           password: this.password,
         });
+        if(result) {
+          this.setUserAction(result.data.user);
+          this.setTokenAction(result.data.token);
+        }
       } catch(error) {
         this.errorMsg = error.response.data;
       }
@@ -76,8 +83,8 @@ form {
 
 .form-field input {
   border: none;
-  padding: 8px 0;
-  font-size: 16px;
+  padding: 8px 4px;
+  font-size: 20px;
   background-color: #ebebeb;
 }
 
@@ -92,6 +99,10 @@ button {
   color: #fff;
   font-size: 16px;
   font-weight: 600;
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 .error-msg {
