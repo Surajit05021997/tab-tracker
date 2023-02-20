@@ -15,8 +15,8 @@ async function getAllSongs() {
     return allSongs.data;
 }
 
-function createSong(song) {
-    const result = axios.post('songs', song);
+async function createSong(song) {
+    const result = await axios.post('songs', song);
     return result;
 }
 
@@ -30,4 +30,18 @@ async function editSong({songId, song}) {
     return result;
 }
 
-export { register, login, getAllSongs, createSong, getSong, editSong };
+async function addFavourite(favData) {
+    const result = await axios.post('/favourite', favData);
+    return result;
+}
+
+async function getFavourite(userId) {
+    const result = await axios.get(`/favourite/${userId}`);
+    return result.data;
+}
+
+async function removeFavourite(favouriteId) {
+    const result = await axios.delete(`/favourite/${favouriteId}`);
+    return result.data;
+}
+export { register, login, getAllSongs, createSong, getSong, editSong, addFavourite, getFavourite, removeFavourite };

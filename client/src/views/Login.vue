@@ -41,6 +41,7 @@ export default {
         if(result) {
           this.setUserAction(result.data.user);
           this.setTokenAction(result.data.token);
+          this.$router.push({name: 'Songs'});
         }
       } catch(error) {
         this.errorMsg = error.response.data;

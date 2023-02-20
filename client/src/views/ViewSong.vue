@@ -8,7 +8,11 @@
           <p><span class="info-label">Artist: </span>{{ song.artist }}</p>
           <p><span class="info-label">Genre: </span>{{ song.genre }}</p>
           <p><span class="info-label">Album: </span>{{ song.album }}</p>
-          <button type="button" @click="editSong">Edit Song</button>
+          <button v-if="isUserLoggedIn" type="button" @click="editSong">Edit Song</button>
+          <div v-if="isUserLoggedIn">
+            <button v-if="!favouriteSongs?.includes(this.$router.currentRoute.value.params.id)" type="button" @click="addFavourite">Add to favourite</button>
+            <button v-else type="button" @click="removeFavourite">Remove from favourite</button>
+          </div>
         </div>
       </div>
       <div class="panel song-video">
@@ -35,7 +39,8 @@
 </template>
 
 <script>
-import { getSong } from '@/services';
+import { getSong, addFavourite, getFavourite, removeFavourite } from '@/services';
+import { mapState } from 'vuex';
 
 export default {
   name: 'View Song',
@@ -43,18 +48,45 @@ export default {
     return {
       errorMsg: '',
       song: null,
+      favouriteData: null,
+      favouriteSongs: null,
+      favouriteId: null,
     }
   },
   async created() {
     try {
       this.song = await getSong(this.$router.currentRoute.value.params.id);
+      if(this.isUserLoggedIn) {
+        await this.getFavouriteData();
+      }
     } catch(error) {
       this.errorMsg = 'Faild to load song info!'
     }
   },
+  computed: {
+    ...mapState(['isUserLoggedIn', 'user', 'isUserLoggedIn']),
+  },
   methods: {
     editSong() {
       this.$router.push({name: 'EditSong', params: {id: this.$router.currentRoute.value.params.id}})
+    },
+    async getFavouriteData() {
+      this.favouriteData = await getFavourite(this.user._id);
+      this.favouriteSongs = this.favouriteData.map((data) => {
+        return data.songId;
+      });
+      const currentSongFavData = this.favouriteData.find((data) => {
+        return data.songId === this.$router.currentRoute.value.params.id;
+      });
+      this.favouriteId = currentSongFavData?._id;
+    },
+    async addFavourite() {
+      await addFavourite({userId: this.user._id, songId: this.$router.currentRoute.value.params.id});
+      await this.getFavouriteData();
+    },
+    async removeFavourite() {
+      await removeFavourite(this.favouriteId);
+      await this.getFavouriteData();
     },
   },
 }

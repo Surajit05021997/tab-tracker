@@ -30,7 +30,7 @@ export default {
     logoutUser() {
       this.setUserAction(null);
       this.setTokenAction(null);
-      this.$router.push({name: 'Home'});
+      this.$router.push({name: 'Songs'});
     },
   },
 }

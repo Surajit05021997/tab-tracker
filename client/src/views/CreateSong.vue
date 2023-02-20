@@ -64,9 +64,10 @@ export default {
     }
   },
   methods: {
-    createSong() {
+    async createSong() {
       try {
-        createSong(this.song);
+        await createSong(this.song);
+        this.$router.push({name: 'Songs'});
       } catch(error) {
         console.log(error);
       }

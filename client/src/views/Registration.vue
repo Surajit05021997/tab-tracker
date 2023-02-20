@@ -43,6 +43,7 @@ export default {
         if(result.status === 200) {
           this.email = '';
           this.password = '';
+          this.$router.push({name: 'Songs'});
         }
       } catch(error) {
         this.errorMsg = error.response.data;
