@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
         res.status(400).send('You must provide valid email address.');
         break;
       case 'password':
-        res.status(400).send('Password must contains character between 8 to 32 haveing lowercase or uppercase or numbers.');
+        res.status(400).send('Password must contains character between 8 to 32, lowercase or uppercase or numbers.');
         break;
       default:
         res.status(400).send('Invalid data!');
