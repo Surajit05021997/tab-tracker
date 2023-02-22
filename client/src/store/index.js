@@ -14,18 +14,13 @@ const mutations = {
   },
   SET_TOKEN(state, payload) {
     state.token = payload;
-    if(payload) {
-      state.isUserLoggedIn = true;
-    } else {
-      state.isUserLoggedIn = false;
-    }
   },
   All_SONGS(state, payload) {
     state.allSongs = payload;
-  }
-  // SET_IS_USER_LOGGED_IN(state, payload) {
-  //   state.isUserLoggedIn = payload;
-  // },
+  },
+  SET_IS_USER_LOGGED_IN(state, payload) {
+    state.isUserLoggedIn = payload;
+  },
 }
 
 const actions = {
@@ -33,9 +28,18 @@ const actions = {
     commit('SET_USER', payload);
   },
   setTokenAction({commit}, payload) {
+    let expires = '';
+    let days = 7;
+    let date = new Date();
+    date.setTime(date.getTime() + (days*24*60*60*1000));
+    expires = "; expires=" + date.toUTCString();
+    document.cookie = 'token' + "=" + (payload || "")  + expires + "; path=/";
     commit('SET_TOKEN', payload);
   },
-  async setAllSongsAction({commit}) {
+  setIsUserLoggedIn({commit}, payload) {
+    commit('SET_IS_USER_LOGGED_IN', payload);
+  },
+  async getAllSongsAction({commit}) {
     const allSongs = await getAllSongs();
     commit('All_SONGS', allSongs);
   }

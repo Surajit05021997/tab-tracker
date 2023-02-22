@@ -1,5 +1,5 @@
 <template>
-  <div class="main-container">
+  <div v-if="isUserLoggedIn" class="main-container">
     <div class="favourite-container">
       <div class="title">
         <p>Favourites</p>
@@ -38,7 +38,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import { getFavourite } from '@/services';
+import { getFavourite, authenticateUser } from '@/services';
 
 export default {
   name: 'Songs',
@@ -48,16 +48,25 @@ export default {
     }
   },
   computed: {
-    ...mapState(['allSongs', 'isUserLoggedIn', 'user']),
+    ...mapState(['allSongs', 'isUserLoggedIn', 'user', 'token']),
   },
   async created() {
-    this.setAllSongsAction();
-    if(this.isUserLoggedIn) {
-      this.favouriteSongs = await getFavourite(this.user._id);
+    try {
+      if(!this.isUserLoggedIn) {
+        const user = await authenticateUser();
+        this.setUserAction(user);
+        this.setIsUserLoggedIn(true);
+      }
+      if(this.user) {
+        this.getAllSongsAction();
+        this.favouriteSongs = await getFavourite();
+      }
+    } catch(error) {
+      this.$router.push({name: 'Login'});
     }
   },
   methods: {
-    ...mapActions(['setAllSongsAction']),
+    ...mapActions(['setUserAction', 'getAllSongsAction', 'setIsUserLoggedIn']),
     addSong() {
       this.$router.push({ name: 'CreateSong' });
     },

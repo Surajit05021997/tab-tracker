@@ -30,7 +30,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setUserAction', 'setTokenAction']),
+    ...mapActions(['setUserAction', 'setTokenAction', 'setIsUserLoggedIn']),
     async login() {
       try {
         this.errorMsg = '';
@@ -41,6 +41,7 @@ export default {
         if(result) {
           this.setUserAction(result.data.user);
           this.setTokenAction(result.data.token);
+          this.setIsUserLoggedIn(true);
           this.$router.push({name: 'Songs'});
         }
       } catch(error) {

@@ -26,11 +26,12 @@ export default {
     ...mapState(['isUserLoggedIn']),
   },
   methods: {
-    ...mapActions(['setUserAction', 'setTokenAction']),
+    ...mapActions(['setUserAction', 'setTokenAction', 'setIsUserLoggedIn']),
     logoutUser() {
       this.setUserAction(null);
       this.setTokenAction(null);
-      this.$router.push({name: 'Songs'});
+      this.setIsUserLoggedIn(false);
+      this.$router.push({name: 'Login'});
     },
   },
 }

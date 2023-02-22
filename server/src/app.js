@@ -5,6 +5,7 @@ const cors = require('cors');
 const config = require('./config/config.js');
 const routes = require('./routes/routes.js');
 const mongoose = require('mongoose');
+require('./passport.js');
 
 const app = express();
 // app.use(morgan('combined'));

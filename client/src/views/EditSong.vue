@@ -46,6 +46,7 @@
 
 <script>
 import { getSong, editSong } from '@/services';
+import { mapState } from 'vuex';
 
 export default {
   name: 'EditSong',
@@ -64,9 +65,18 @@ export default {
       errorMsg: null,
     }
   },
+  computed: {
+    ...mapState(['isUserLoggedIn']),
+  },
   async created() {
     try {
-      this.song = await getSong(this.$router.currentRoute.value.params.id);
+      if(this.isUserLoggedIn) {
+        console.log('Innn')
+        this.song = await getSong(this.$router.currentRoute.value.params.id);
+      }
+      else {
+        this.$router.push({name: 'Login'});
+      }
     } catch(error) {
       this.errorMsg = 'Faild to load song info!';
     }

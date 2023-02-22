@@ -18,7 +18,7 @@ module.exports = {
   },
   async getFavourite(req, res) {
     try {
-      const favouriteData = await Favourite.find({userId: req.params.userId});
+      const favouriteData = await Favourite.find({userId: req.user._id});
       res.send(favouriteData);
     } catch(err) {
       res.status(500).send('Failed to get favrourite songs');
