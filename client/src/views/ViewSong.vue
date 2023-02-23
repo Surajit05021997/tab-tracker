@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isUserLoggedIn">
     <div v-if="!errorMsg && song" class="view-song-panel">
       <div class="panel song-info">
         <p class="panel-title">Song Info</p>
@@ -39,8 +39,8 @@
 </template>
 
 <script>
-import { getSong, addFavourite, getFavourite, removeFavourite } from '@/services';
-import { mapState } from 'vuex';
+import { getSong, addFavourite, getFavourite, removeFavourite, authenticateUser } from '@/services';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'View Song',
@@ -55,18 +55,25 @@ export default {
   },
   async created() {
     try {
+      if(!this.isUserLoggedIn) {
+        const user = await authenticateUser();
+        this.setUserAction(user);
+        this.setIsUserLoggedIn(true);
+      }
       this.song = await getSong(this.$router.currentRoute.value.params.id);
-      if(this.isUserLoggedIn) {
+      if(this.user) {
         await this.getFavouriteData();
       }
     } catch(error) {
-      this.errorMsg = 'Faild to load song info!'
+      // this.errorMsg = 'Faild to load song info!'
+      this.$router.push({name: 'Login'});
     }
   },
   computed: {
     ...mapState(['isUserLoggedIn', 'user', 'isUserLoggedIn']),
   },
   methods: {
+    ...mapActions(['setUserAction', 'setIsUserLoggedIn']),
     editSong() {
       this.$router.push({name: 'EditSong', params: {id: this.$router.currentRoute.value.params.id}})
     },

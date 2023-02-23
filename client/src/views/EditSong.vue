@@ -45,8 +45,8 @@
 </template>
 
 <script>
-import { getSong, editSong } from '@/services';
-import { mapState } from 'vuex';
+import { getSong, editSong, authenticateUser } from '@/services';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'EditSong',
@@ -66,22 +66,25 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isUserLoggedIn']),
+    ...mapState(['isUserLoggedIn', 'user']),
   },
   async created() {
     try {
-      if(this.isUserLoggedIn) {
-        console.log('Innn')
+      if(!this.isUserLoggedIn) {
+        const user = await authenticateUser();
+        this.setUserAction(user);
+        this.setIsUserLoggedIn(true);
+      }
+      if(this.user) {
         this.song = await getSong(this.$router.currentRoute.value.params.id);
       }
-      else {
-        this.$router.push({name: 'Login'});
-      }
     } catch(error) {
-      this.errorMsg = 'Faild to load song info!';
+      this.$router.push({name: 'Login'});
+      // this.errorMsg = 'Faild to load song info!';
     }
   },
   methods: {
+    ...mapActions(['setUserAction', 'setIsUserLoggedIn']),
     async editSong() {
       try {
         await editSong({songId: this.$router.currentRoute.value.params.id, song: this.song});
